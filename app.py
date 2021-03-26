@@ -28,6 +28,11 @@ server = app.server
 
 # Spain Data
 df_spain = get_covid_data_Spain()
+
+Spain = df_spain.groupby('Date').sum().reset_index()
+Spain['Region'] = 'Spain'
+df_spain = pd.concat([df_spain,Spain],axis=0)
+
 df_spain_line_data = df_spain[['Date', 'Cases',
                                'Daily Cases; 7-day rolling average', 'Deaths',
                                'Daily Deaths; 7-day rolling average', 'Region']]
@@ -111,10 +116,10 @@ spain = dbc.Container([
                 id = 'region_set',
                 options = [
                     {'label': ' Spain', 'value': 'Spain'},
-                    {'label': ' Madrid', 'value': 'Madrid'},
-                    {'label': ' Catalonia', 'value': 'Catalonia'},
+                    {'label': ' Madrid, Catalonia', 'value': 'MC'},
+                    {'label': ' All Regions', 'value': 'All'},
                 ],
-                value = 'Catalonia',
+                value = 'MC',
                 labelStyle =
                 {
                     'display': 'inline-block',
@@ -374,13 +379,17 @@ def callback_region_list(Spain_Data_to_show):
 def callback_region_set(region_set_value):
 
     if region_set_value == 'Spain':
-        region_list = df_spain.query("Cases > -1").Region.unique().tolist()
+        region_list = df_spain.query("Region == 'Spain'").Region.unique().tolist()
         return region_list
-    if region_set_value == 'Madrid':
-        region_list = df_spain.query("Region == 'Madrid'").Region.unique().tolist()
+    if region_set_value == 'MC':
+        region_list = df_spain.query("Region == ['Madrid','Catalonia']").Region.unique().tolist()
         return region_list
-    if region_set_value == 'Catalonia':
-        region_list = df_spain.query("Region == 'Catalonia'").Region.unique().tolist()
+    if region_set_value == 'All':
+        region_list = df_spain.query("Region == ['Andalusia','Aragon','Asturias'," +
+                                     "'Balearic Islands','Canary Islands','Cantabria'," +
+                                     "'Castille and Leon','Castille-La Mancha','Catalonia'," +
+                                     "'Valencia','Extremadura','Galicia','Madrid','Murcia'," +
+                                     "'Navarre','Basque Country','La Rioja']").Region.unique().tolist()
         return region_list
 
 
