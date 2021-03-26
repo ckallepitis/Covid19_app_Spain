@@ -28,11 +28,6 @@ server = app.server
 
 # Spain Data
 df_spain = get_covid_data_Spain()
-
-Spain = df_spain.groupby('Date').sum().reset_index()
-Spain['Region'] = 'Spain'
-df_spain = pd.concat([df_spain,Spain],axis=0)
-
 df_spain_line_data = df_spain[['Date', 'Cases',
                                'Daily Cases; 7-day rolling average', 'Deaths',
                                'Daily Deaths; 7-day rolling average', 'Region']]

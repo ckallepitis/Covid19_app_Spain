@@ -70,6 +70,10 @@ def get_covid_data_Spain():
 
     df_spain = pd.merge(df_spain, df_loc, how='inner', on='Region')
 
+    Spain = df_spain.groupby('Date').sum().reset_index()
+    Spain['Region'] = 'Spain'
+    df_spain = pd.concat([df_spain,Spain],axis=0)
+
     return df_spain
 
 #=============================================================================#
@@ -77,7 +81,7 @@ def get_covid_data_Spain():
 
 def get_geo_Spain_data(df_spain):
 
-    df_geo_spain = df_spain[['Date','Region','Lat','Long','Cases','Deaths']]
+    df_geo_spain = df_spain[['Date','Region','Lat','Long','Cases','Deaths']][df_spain.Region != 'Spain']
     df_geo_spain = df_geo_spain.set_index(['Date', 'Region'])\
     .unstack().transform(lambda v: v.ffill()).transform(lambda v: v.ffill())\
     .transform(lambda v: v.bfill()).asfreq('D')\
@@ -95,10 +99,11 @@ def get_geo_Spain_data(df_spain):
 # ========== Sunburst chart ==========
 
 def get_sunburst_data(df_spain):
-    df_sunburst = df_spain[['Date', 'Region', 'Cases', 'Deaths','Hospitalised','ICU','Recovered_24h']]
+    df_s = df_spain[df_spain.Region != 'Spain']
+    df_sunburst = df_s[['Date', 'Region', 'Cases', 'Deaths', 'Hospitalised','ICU','Recovered_24h']]
 
-    dd = df_spain[['Date','Recovered_24h']].dropna().loc[df_spain[['Date','Recovered_24h']].dropna().Date.idxmin()].Date
-    d = df_spain[df_spain.Date == dd]
+    dd = df_s[['Date','Recovered_24h']].dropna().loc[df_s[['Date','Recovered_24h']].dropna().Date.idxmin()].Date
+    d = df_s[df_s.Date == dd]
     d['Recovered'] = d.Cases - d.Deaths - d.Hospitalised - d.ICU
     df_sunburst.loc[(df_sunburst.Date == dd),'Recovered_24h'] = d.Recovered * 2
     df_sunburst['Recovered'] = df_sunburst.groupby(['Region']).cumsum().Recovered_24h
