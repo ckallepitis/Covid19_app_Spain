@@ -13,14 +13,12 @@ Interactive dashboard following the covid19 outbreak in Spain.
 
 The following are screenshots for the app in this repo:
 
-#![screenshot](screenshots/world.png)
+#![screenshot](screenshots/spain_app.png)
 
-#![screenshot](screenshots/deaths.png)
-
-#![screenshot](screenshots/worldmap.png)
-
-#![screenshot](screenshots/spain.png)
+#![screenshot](screenshots/trajectories_spain_regions.png)
 
 #![screenshot](screenshots/spain_map.png)
 
-#![screenshot](screenshots/madrid.png)
+#![screenshot](screenshots/sunburst_spain.png)
+
+#![screenshot](screenshots/sunburst_madrid.png)
